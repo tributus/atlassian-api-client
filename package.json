@@ -1,0 +1,25 @@
+{
+  "name": "atlassian-api-client",
+  "version": "0.1.0",
+  "description": "Rest API client for Atlassian products",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tributus/atlassian-api-client.git"
+  },
+  "keywords": [
+    "jira",
+    "crowd",
+    "bitbucket",
+    "bamboo"
+  ],
+  "author": "Anderson Norberto Santos <anderson.norberto@gmail.com> (https://github.com/tributus)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tributus/atlassian-api-client/issues"
+  },
+  "homepage": "https://github.com/tributus/atlassian-api-client#readme"
+}
