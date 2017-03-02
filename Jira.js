@@ -31,7 +31,8 @@ var jiraClientServicesHelper = {
                 "Authorization": "Basic " + new Buffer(connectionData.userName +":" + connectionData.password).toString('base64')
             }
         };
-        require(connectionData.protocol).get(options, function(resp){
+        var protocol = require(connectionData.protocol);
+        protocol.get(options, function(resp){
             var data = '';
             resp.on('data', function(chunk){
                 data = data + chunk.toString();
