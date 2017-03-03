@@ -32,7 +32,7 @@ module.exports = {
         };
         this.mergePullRequest = function(projectKey,repositorySlug,pullRequestId,version,success,fail){
             var params = {projectKey:projectKey,repositorySlug:repositorySlug,pullRequestId:pullRequestId,version:version};
-            bb.post("/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/merge?version={version}",params,undefined,connection,success,fail);
+            bb.post("/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/merge?version={version}",params,{close_source_branch:true},connection,success,fail);
         };
 
         this.setBranchRestrictions = function(projectKey,repositorySlug,restrictions,success,fail){
