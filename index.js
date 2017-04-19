@@ -9,7 +9,7 @@ module.exports = {
         connection.protocol = connection.protocol || 'http';
         connection.port = connection.port || '80';
         connection.options = connection.options || {};
-        connection.options.allowNoJsonResponse = false;
+        connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
 
 
         this.get = function(url,params,data, success, fail){
@@ -53,7 +53,7 @@ module.exports = {
         connection.protocol = connection.protocol || 'http';
         connection.port = connection.port || '80';
         connection.options = connection.options || {};
-        connection.options.allowNoJsonResponse = false;
+        connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
 
         this.get = function(url,params,data, success, fail){
             jira.get(url,params,data,connection,success,fail);
@@ -94,7 +94,7 @@ module.exports = {
             jira.post("/rest/api/latest/issue/{issuekey}/remotelink",{issuekey:issueKeyOrID},RequestBody,connection,success,fail);
         };
 
-        this.addIssueCOmment = function(issueIdOrKey,comment, success,fail){
+        this.addIssueComment = function(issueIdOrKey,comment, success,fail){
             var requestBody = {"body": comment};
             jira.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,connection,success,fail);
         };
