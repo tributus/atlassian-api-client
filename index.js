@@ -98,6 +98,14 @@ module.exports = {
             var requestBody = {"body": comment};
             jira.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,connection,success,fail);
         };
+        
+        this.search = function(query,success,fail){
+            jira.get("/rest/api/2/search?jql={jql}",{jql:encodeURIComponent(query)},undefined,connection,success,fail);
+        };
+
+        this.advancedSearch = function(requestBody,success,fail){
+            jira.post("/rest/api/2/search",undefined,requestBody,connection,success,fail);
+        };
 
         return this;
     }
