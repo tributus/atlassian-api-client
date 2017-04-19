@@ -42,8 +42,13 @@ var jiraClientServicesHelper = {
                     success(JSON.parse(data));
                 }
                 catch(ex){
-                    console.log(data);
-                    fail(data,ex);
+                    if(connectionData.options.allowNoJsonResponse){
+                        success(data,ex);
+                    }
+                    else{
+                        console.log(data);
+                        fail(data,ex);
+                    }
                 }
 
             });
@@ -77,7 +82,13 @@ var jiraClientServicesHelper = {
                     success(JSON.parse(data));
                 }
                 catch(ex){
-                    console.log(ex,data);
+                    if(connectionData.options.allowNoJsonResponse){
+                        success(data,ex);
+                    }
+                    else{
+                        console.log(ex,data);
+                        fail(ex,data);
+                    }
                 }
             });
             resp.on("error", function(e){

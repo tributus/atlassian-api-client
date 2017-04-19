@@ -36,7 +36,18 @@ var bbClientServicesHelper = {
                 data = data + chunk.toString();
             });
             resp.on("end", function(){
-                success(JSON.parse(data));
+                try{
+                    success(JSON.parse(data));
+                }
+                catch (ex){
+                    if(connectionData.options.allowNoJsonResponse){
+                        success(data,ex);
+                    }
+                    else{
+                        console.log(ex,data);
+                        fail(ex,data);
+                    }
+                }
             });
         }).on("error", function(e){
             fail(e);
@@ -68,7 +79,14 @@ var bbClientServicesHelper = {
                     success(JSON.parse(data));
                 }
                 catch(ex){
-                    console.log(ex,data);
+                    if(connectionData.options.allowNoJsonResponse){
+                        success(data,ex);
+                    }
+                    else{
+                        console.log(ex,data);
+                        fail(ex,data);
+                    }
+
                 }
             });
             resp.on("error", function(e){

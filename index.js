@@ -8,6 +8,9 @@ module.exports = {
     bitbucket:function(connection){
         connection.protocol = connection.protocol || 'http';
         connection.port = connection.port || '80';
+        connection.options = connection.options || {};
+        connection.options.allowNoJsonResponse = false;
+
 
         this.get = function(url,params,data, success, fail){
             bb.get(url,params,data,connection,success,fail);
@@ -49,6 +52,8 @@ module.exports = {
     jira:function(connection){
         connection.protocol = connection.protocol || 'http';
         connection.port = connection.port || '80';
+        connection.options = connection.options || {};
+        connection.options.allowNoJsonResponse = false;
 
         this.get = function(url,params,data, success, fail){
             jira.get(url,params,data,connection,success,fail);
@@ -62,7 +67,38 @@ module.exports = {
             jira.get("/rest/api/2/issue/{issueid}",params,undefined,connection,success,fail);
 
         };
-        
+        this.createIssue = function(issueData,success,fail){
+            jira.post("/rest/api/2/issue/",undefined,issueData,connection,success,fail);
+        };
+
+        this.linkIssues = function(linkTypeName,inwardIssueKey,outwardIssueKey,commentBody, success,fail){
+            var LinkRequestBody = {
+                type: {
+                    name: linkTypeName
+                }    ,
+                inward: {
+                    key: inwardIssueKey
+                },
+                outwardIssue: {
+                    key: outwardIssueKey
+                }
+            };
+            if(commentBody){
+                LinkRequestBody.comment ={body:commentBody};
+            }
+            jira.post("/rest/api/2/issueLink",undefined,LinkRequestBody,connection,success,fail);
+        };
+
+        this.createRemoteLink = function(issueKeyOrID,url,title,success,fail){
+            var RequestBody = {object: {url:url,title:title}};
+            jira.post("/rest/api/latest/issue/{issuekey}/remotelink",{issuekey:issueKeyOrID},RequestBody,connection,success,fail);
+        };
+
+        this.addIssueCOmment = function(issueIdOrKey,comment, success,fail){
+            var requestBody = {"body": comment};
+            jira.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,connection,success,fail);
+        };
+
         return this;
     }
 };
