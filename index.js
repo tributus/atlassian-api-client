@@ -98,9 +98,28 @@ module.exports = {
             var requestBody = {"body": comment};
             jira.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,connection,success,fail);
         };
-        
+        this.changeIssueStatus = function(issueIdOrKey,transitionIDOrRequestBody,success,fail){
+            var reqParams = {
+                issueIdOrKey:issueIdOrKey
+            };
+            var requestBody = undefined;
+            if(typeof transitionIDOrRequestBody =="string"){
+                requestBody = {
+                    "transition": {
+                        "id": transitionIDOrRequestBody
+                    }
+                }
+            }
+            else{
+                requestBody = transitionIDOrRequestBody
+            }
+            jira.post("/rest/api/2/issue/{issueIdOrKey}/transitions?expand=transitions.fields",reqParams,requestBody,connection,success,fail)
+        };
+        this.getAllowedTransitions = function(issueIdOrKey,success,fail){
+            jira.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,connection,success,fail)
+        };
         this.search = function(query,success,fail){
-            jira.get("/rest/api/2/search?jql={jql}",{jql:encodeURIComponent(query)},undefined,connection,success,fail);
+            jira.get("/rest/api/2/search?jql={jql}",{jql:query},undefined,connection,success,fail);
         };
 
         this.advancedSearch = function(requestBody,success,fail){

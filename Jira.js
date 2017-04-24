@@ -79,7 +79,12 @@ var jiraClientServicesHelper = {
             });
             resp.on("end", function(){
                 try{
-                    success(JSON.parse(data));
+                    if(data){
+                        success(JSON.parse(data));
+                    }
+                    else{
+                        success({status:"success", tag:"void-response"});
+                    }
                 }
                 catch(ex){
                     if(connectionData.options.allowNoJsonResponse){
