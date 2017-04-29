@@ -1,114 +1,93 @@
 /**
  * Created by anderson.santos on 24/02/2017.
  */
-//todo refatorar e unificar este módulo com o Bitbucket
-
-var jiraClientServicesHelper = {
-    buildApiUrl:function(data,url){
-
-        if(data){
-            var keys = url.match(/\{[a-zA-Z]+}/g);
-            if(keys){
-                keys.forEach(function(key){
-                    url = url.replace(key,data[key.replace(/\{|}/g,"")]);
-                });
-                return url
-            }
-            else{
-                return url;
-            }
-        }
-        else{
-            return url;
-        }
-    },
-    getJiraData: function(apiUrl,bodyData,connectionData,success,fail){
-        var options = {
-            host: connectionData.host,
-            port: connectionData.port,
-            path: apiUrl,
-            headers:{
-                "Authorization": "Basic " + new Buffer(connectionData.userName +":" + connectionData.password).toString('base64')
-            }
-        };
-        var protocol = require(connectionData.protocol);
-        protocol.get(options, function(resp){
-            var data = '';
-            resp.on('data', function(chunk){
-                data = data + chunk.toString();
-            });
-            resp.on("end", function(){
-                try{
-                    success(JSON.parse(data));
-                }
-                catch(ex){
-                    if(connectionData.options.allowNoJsonResponse){
-                        success(data,ex);
-                    }
-                    else{
-                        console.log(data);
-                        fail(data,ex);
-                    }
-                }
-
-            });
-        }).on("error", function(e){
-            fail(e);
-        });
-    },
-    postJiraData:function(apiUrl,data,connectionData,success,fail){
-        var api = apiUrl;
-        var body = JSON.stringify(data||{});
-        var options = {
-            host: connectionData.host,
-            port:  connectionData.port,
-            path: api,
-            method:"POST",
-            headers:{
-                "X-Atlassian-Token":" no-check",
-                "content-type": "application/json",
-                "Content-Length": Buffer.byteLength(body),
-                'Accept': 'application/json',
-                "Authorization": "Basic " + new Buffer(connectionData.userName +":" + connectionData.password).toString('base64')
-            }
-        };
-        var post_req = require(connectionData.protocol).request(options, function(resp){
-            var data = '';
-            resp.on('data', function(chunk){
-                data = data + chunk.toString();
-            });
-            resp.on("end", function(){
-                try{
-                    if(data){
-                        success(JSON.parse(data));
-                    }
-                    else{
-                        success({status:"success", tag:"void-response"});
-                    }
-                }
-                catch(ex){
-                    if(connectionData.options.allowNoJsonResponse){
-                        success(data,ex);
-                    }
-                    else{
-                        console.log(ex,data);
-                        fail(ex,data);
-                    }
-                }
-            });
-            resp.on("error", function(e){
-                fail(e);
-            })
-        });
-        post_req.end(body);
-    }
-};
+var request = require('./WebRequestHelpers');
 module.exports = {
-
     get:function (url,params,data, connectionData ,success, fail) {
-        jiraClientServicesHelper.getJiraData(jiraClientServicesHelper.buildApiUrl(params,url),data,connectionData,success,fail);
+        request.getAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
     },
     post:function(url,params,data, connectionData ,success, fail){
-        jiraClientServicesHelper.postJiraData(jiraClientServicesHelper.buildApiUrl(params,url),data,connectionData,success,fail);
+        request.postAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
+    },
+    getInterface:function($this){
+        return function(connection){
+            connection.protocol = connection.protocol || 'http';
+            connection.port = connection.port || '80';
+            connection.options = connection.options || {};
+            connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
+
+            this.get = function(url,params,data, success, fail){
+                $this.get(url,params,data,connection,success,fail);
+            };
+
+            this.post = function(url,params,data, success, fail){
+                $this.post(url,params,data,connection,success,fail);
+            };
+            this.getIssueByID = function(issueid,success,fail){
+                var params ={issueid:issueid};
+                $this.get("/rest/api/2/issue/{issueid}",params,undefined,connection,success,fail);
+
+            };
+            this.createIssue = function(issueData,success,fail){
+                $this.post("/rest/api/2/issue/",undefined,issueData,connection,success,fail);
+            };
+
+            this.linkIssues = function(linkTypeName,inwardIssueKey,outwardIssueKey,commentBody, success,fail){
+                var LinkRequestBody = {
+                    type: {
+                        name: linkTypeName
+                    }    ,
+                    inward: {
+                        key: inwardIssueKey
+                    },
+                    outwardIssue: {
+                        key: outwardIssueKey
+                    }
+                };
+                if(commentBody){
+                    LinkRequestBody.comment ={body:commentBody};
+                }
+                $this.post("/rest/api/2/issueLink",undefined,LinkRequestBody,connection,success,fail);
+            };
+
+            this.createRemoteLink = function(issueKeyOrID,url,title,success,fail){
+                var RequestBody = {object: {url:url,title:title}};
+                $this.post("/rest/api/latest/issue/{issuekey}/remotelink",{issuekey:issueKeyOrID},RequestBody,connection,success,fail);
+            };
+
+            this.addIssueComment = function(issueIdOrKey,comment, success,fail){
+                var requestBody = {"body": comment};
+                $this.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,connection,success,fail);
+            };
+            this.changeIssueStatus = function(issueIdOrKey,transitionIDOrRequestBody,success,fail){
+                var reqParams = {
+                    issueIdOrKey:issueIdOrKey
+                };
+                var requestBody = undefined;
+                if(typeof transitionIDOrRequestBody =="string"){
+                    requestBody = {
+                        "transition": {
+                            "id": transitionIDOrRequestBody
+                        }
+                    }
+                }
+                else{
+                    requestBody = transitionIDOrRequestBody
+                }
+                jira.post("/rest/api/2/issue/{issueIdOrKey}/transitions?expand=transitions.fields",reqParams,requestBody,connection,success,fail)
+            };
+            this.getAllowedTransitions = function(issueIdOrKey,success,fail){
+                $this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,connection,success,fail)
+            };
+            this.search = function(query,success,fail){
+                $this.get("/rest/api/2/search?jql={jql}",{jql:query},undefined,connection,success,fail);
+            };
+
+            this.advancedSearch = function(requestBody,success,fail){
+                $this.post("/rest/api/2/search",undefined,requestBody,connection,success,fail);
+            };
+
+            return this;
+        }
     }
 };

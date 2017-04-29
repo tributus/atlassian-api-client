@@ -1,107 +1,58 @@
 /**
  * Created by anderson.santos on 22/02/2017.
  */
-
-var bbClientServicesHelper = {
-    buildApiUrl:function(data,url){
-
-        if(data){
-            var keys = url.match(/\{[a-zA-Z]+}/g);
-            if(keys){
-                keys.forEach(function(key){
-                    url = url.replace(key,data[key.replace(/\{|}/g,"")]);
-                });
-                return url
-            }
-            else{
-                return url;
-            }
-        }
-        else{
-            return url;
-        }
-    },
-    getBitBucketData: function(apiUrl,bodyData,connectionData,success,fail){
-        var options = {
-            host: connectionData.host,
-            port: connectionData.port,
-            path: apiUrl,
-            headers:{
-                "Authorization": "Basic " + new Buffer(connectionData.userName +":" + connectionData.password).toString('base64')
-            }
-        };
-        require(connectionData.protocol).get(options, function(resp){
-            var data = '';
-            resp.on('data', function(chunk){
-                data = data + chunk.toString();
-            });
-            resp.on("end", function(){
-                try{
-                    success(JSON.parse(data));
-                }
-                catch (ex){
-                    if(connectionData.options.allowNoJsonResponse){
-                        success(data,ex);
-                    }
-                    else{
-                        console.log(ex,data);
-                        fail(ex,data);
-                    }
-                }
-            });
-        }).on("error", function(e){
-            fail(e);
-        });
-    },
-    postBitbucketData:function(apiUrl,data,connectionData,success,fail){
-        var api = apiUrl;
-        var body = JSON.stringify(data||{});
-        var options = {
-            host: connectionData.host,
-            port:  connectionData.port,
-            path: api,
-            method:"POST",
-            headers:{
-                "X-Atlassian-Token":" no-check",
-                "content-type": "application/json",
-                "Content-Length": Buffer.byteLength(body),
-                'Accept': 'application/json',
-                "Authorization": "Basic " + new Buffer(connectionData.userName +":" + connectionData.password).toString('base64')
-            }
-        };
-        var post_req = require(connectionData.protocol).request(options, function(resp){
-            var data = '';
-            resp.on('data', function(chunk){
-                data = data + chunk.toString();
-            });
-            resp.on("end", function(){
-                try{
-                    success(JSON.parse(data));
-                }
-                catch(ex){
-                    if(connectionData.options.allowNoJsonResponse){
-                        success(data,ex);
-                    }
-                    else{
-                        console.log(ex,data);
-                        fail(ex,data);
-                    }
-
-                }
-            });
-            resp.on("error", function(e){
-                fail(e);
-            })
-        });
-        post_req.end(body);
-    }
-};
+var request = require('./WebRequestHelpers');
 module.exports = {
     
     get:function (url,params,data, connectionData ,success, fail) {
-        bbClientServicesHelper.getBitBucketData(bbClientServicesHelper.buildApiUrl(params,url),data,connectionData,success,fail);
+        request.getAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
     },
     post:function(url,params,data, connectionData ,success, fail){
-        bbClientServicesHelper.postBitbucketData(bbClientServicesHelper.buildApiUrl(params,url),data,connectionData,success,fail);
+        request.postAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
+    },
+    getInterface:function($this){
+        return function(connection){
+            connection.protocol = connection.protocol || 'http';
+            connection.port = connection.port || '80';
+            connection.options = connection.options || {};
+            connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
+
+            this.get = function(url,params,data, success, fail){
+                $this.get(url,params,data,connection,success,fail);
+            };
+
+            this.post = function(url,params,data, success, fail){
+                $this.post(url,params,data,connection,success,fail);
+            };
+
+            this.getInboxPullRequests = function(success,fail){
+                $this.get("/rest/api/1.0/inbox/pull-requests?limit=25",undefined,undefined,connection,success,fail);
+            };
+
+            this.getPullRequestMergeCondition = function(projectKey,repositorySlug,pullRequestId,success,fail){
+                var params = {projectKey:projectKey,repositorySlug:repositorySlug,pullRequestId:pullRequestId};
+                $this.get("/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/merge",params,undefined,connection,success,fail);
+            };
+
+            this.approvePullRequest = function(projectKey,repositorySlug,pullRequestId,success,fail){
+                var params = {projectKey:projectKey,repositorySlug:repositorySlug,pullRequestId:pullRequestId};
+                $this.post("/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/approve",params,undefined,connection,success,fail);
+            };
+            this.mergePullRequest = function(projectKey,repositorySlug,pullRequestId,version,success,fail){
+                var params = {projectKey:projectKey,repositorySlug:repositorySlug,pullRequestId:pullRequestId,version:version};
+                $this.post("/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/merge?version={version}",params,{close_source_branch:true},connection,success,fail);
+            };
+
+            this.setBranchRestrictions = function(projectKey,repositorySlug,restrictions,success,fail){
+                var params={projectKey:projectKey,repositorySlug:repositorySlug};
+                $this.post("/rest/branch-permissions/2.0/projects/{projectKey}/repos/{repositorySlug}/restrictions",params,restrictions,connection,success,fail);
+            };
+            this.setDefaultPullRequestRules = function(projectKey,repositorySlug,params,rules,success,fail){
+                var params={projectKey:projectKey,repositorySlug:repositorySlug};
+                $this.post("/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/settings/pull-requests",params,rules,connection,success,fail);
+            };
+
+            return this;
+        }
     }
 };

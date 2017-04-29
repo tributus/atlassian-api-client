@@ -1,6 +1,6 @@
 {
   "name": "atlassian-api-client",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Rest API client for Atlassian products",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,10 @@
     "jira",
     "crowd",
     "bitbucket",
-    "bamboo"
+    "bamboo",
+    "confluence",
+    "atlassian",
+    "api"
   ],
   "author": "Anderson Norberto Santos <anderson.norberto@gmail.com> (https://github.com/tributus)",
   "license": "MIT",
