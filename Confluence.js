@@ -9,6 +9,12 @@ module.exports = {
     post:function(url,params,data, connectionData ,success, fail){
         request.postAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
     },
+    put:function(url,params,data, connectionData ,success, fail){
+        request.putAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
+    },
+    delete:function(url,params,data, connectionData ,success, fail){
+        request.deleteAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
+    },
     getInterface:function($this){
         return function(connection){
             connection.protocol = connection.protocol || 'http';
@@ -34,7 +40,7 @@ module.exports = {
                 $this.post("/rest/api/content",undefined,requestbody,connection,success,fail);
             };
             this.updatePageById = function(pageid,requestbody,success,fail){
-                $this.post("/rest/api/content/{pageid}",{pageid:pageid},requestbody,connection,success,fail);
+                $this.put("/rest/api/content/{pageid}",{pageid:pageid},requestbody,connection,success,fail);
             };
             return this;
         }
