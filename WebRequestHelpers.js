@@ -54,14 +54,15 @@ var impl = {
             fail(e);
         });
     },
-    postAtlassianData:function(apiUrl,data,connectionData,success,fail){
+    changeAtlassianData:function(method, apiUrl,data,connectionData,success,fail){
+        method = method || "POST";
         var api = apiUrl;
         var body = JSON.stringify(data||{});
         var options = {
             host: connectionData.host,
             port:  connectionData.port,
             path: api,
-            method:"POST",
+            method:method,
             headers:{
                 "X-Atlassian-Token":" no-check",
                 "content-type": "application/json",
@@ -99,10 +100,21 @@ var impl = {
             })
         });
         post_req.end(body);
+    },
+    postAtlassianData:function(apiUrl,data,connectionData,success,fail){
+        impl.changeAtlassianData("POST",apiUrl,data,connectionData,success,fail);
+    },
+    putAtlassianData:function(apiUrl,data,connectionData,success,fail){
+        impl.changeAtlassianData("PUT",apiUrl,data,connectionData,success,fail);
+    },
+    deleteAtlassianData:function(apiUrl,data,connectionData,success,fail){
+        impl.changeAtlassianData("DELETE",apiUrl,data,connectionData,success,fail);
     }
 };
 module.exports = {
     buildApiUrl:impl.buildApiUrl,
     getAtlassianData:impl.getAtlassianData,
-    postAtlassianData:impl.postAtlassianData
+    postAtlassianData:impl.postAtlassianData,
+    putAtlassianData:impl.putAtlassianData,
+    deleteAtlassianData:impl.deleteAtlassianData
 };

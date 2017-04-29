@@ -30,11 +30,12 @@ module.exports = {
                 };
                 $this.get("/rest/api/content/{itemid}?expand={expand}",params,undefined,connection,success,fail);
             };
-            this.postContent = function(contendData,success,fail){
-                $this.post("/rest/api/content",undefined,contendData,connection,success,fail);
+            this.postContent = function(requestbody,success,fail){
+                $this.post("/rest/api/content",undefined,requestbody,connection,success,fail);
             };
-
-
+            this.updatePageById = function(pageid,requestbody,success,fail){
+                $this.post("/rest/api/content/{pageid}",{pageid:pageid},requestbody,connection,success,fail);
+            };
             return this;
         }
     }
