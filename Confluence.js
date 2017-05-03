@@ -6,9 +6,9 @@ module.exports = {
     get:function (url,params,data, connectionData ,success, fail) {
         request.getAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
     },
-    post:function(url,params,data, connectionData ,success, fail){
-        request.postAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
-    },
+    // post:function(url,params,data, connectionData ,success, fail){
+    //     request.postAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
+    // },
     put:function(url,params,data, connectionData ,success, fail){
         request.putAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
     },
@@ -27,7 +27,8 @@ module.exports = {
                 };
 
                 this.post = function(url,params,data, success, fail){
-                    $this.post(url,params,data,connection,success,fail);
+                    request.postAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                    //$this.postAtlassianData(url,params,data,connection,success,fail);
                 };
                 this.put = function(url,params,data, success, fail){
                     $this.put(url,params,data,connection,success,fail);
@@ -46,7 +47,7 @@ module.exports = {
                 };
 
                 this.postContent = function(requestbody,success,fail){
-                    $this.post("/rest/api/content",undefined,requestbody,connection,success,fail);
+                    this.post("/rest/api/content",undefined,requestbody,connection,success,fail);
                 };
                 this.updatePageById = function(pageid,requestbody,success,fail){
                     $this.put("/rest/api/content/{pageid}",{pageid:pageid},requestbody,connection,success,fail);

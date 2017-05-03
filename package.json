@@ -1,6 +1,6 @@
 {
   "name": "atlassian-api-client",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Rest API client for Atlassian products",
   "main": "index.js",
   "scripts": {

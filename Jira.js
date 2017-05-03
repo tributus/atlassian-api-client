@@ -6,9 +6,9 @@ module.exports = {
     get:function (url,params,data, connectionData ,success, fail) {
         request.getAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
     },
-    post:function(url,params,data, connectionData ,success, fail){
-        request.postAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
-    },
+    // post:function(url,params,data, connectionData ,success, fail){
+    //     request.postAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
+    // },
     put:function(url,params,data, connectionData ,success, fail){
         request.putAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
     },
@@ -28,7 +28,8 @@ module.exports = {
                 };
 
                 this.post = function(url,params,data, success, fail){
-                    $this.post(url,params,data,connection,success,fail);
+                    request.postAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                    //$this.post(url,params,data,connection,success,fail);
                 };
                 this.put = function(url,params,data, success, fail){
                     $this.put(url,params,data,connection,success,fail);
@@ -43,7 +44,7 @@ module.exports = {
 
                 };
                 this.createIssue = function(issueData,success,fail){
-                    $this.post("/rest/api/2/issue/",undefined,issueData,connection,success,fail);
+                    this.post("/rest/api/2/issue/",undefined,issueData,connection,success,fail);
                 };
 
                 this.linkIssues = function(linkTypeName,inwardIssueKey,outwardIssueKey,commentBody, success,fail){
@@ -61,17 +62,17 @@ module.exports = {
                     if(commentBody){
                         LinkRequestBody.comment ={body:commentBody};
                     }
-                    $this.post("/rest/api/2/issueLink",undefined,LinkRequestBody,connection,success,fail);
+                    this.post("/rest/api/2/issueLink",undefined,LinkRequestBody,connection,success,fail);
                 };
 
                 this.createRemoteLink = function(issueKeyOrID,url,title,success,fail){
                     var RequestBody = {object: {url:url,title:title}};
-                    $this.post("/rest/api/latest/issue/{issuekey}/remotelink",{issuekey:issueKeyOrID},RequestBody,connection,success,fail);
+                    this.post("/rest/api/latest/issue/{issuekey}/remotelink",{issuekey:issueKeyOrID},RequestBody,connection,success,fail);
                 };
 
                 this.addIssueComment = function(issueIdOrKey,comment, success,fail){
                     var requestBody = {"body": comment};
-                    $this.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,connection,success,fail);
+                    this.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,connection,success,fail);
                 };
                 this.changeIssueStatus = function(issueIdOrKey,transitionIDOrRequestBody,success,fail){
                     var reqParams = {
@@ -88,7 +89,7 @@ module.exports = {
                     else{
                         requestBody = transitionIDOrRequestBody
                     }
-                    jira.post("/rest/api/2/issue/{issueIdOrKey}/transitions?expand=transitions.fields",reqParams,requestBody,connection,success,fail)
+                    this.post("/rest/api/2/issue/{issueIdOrKey}/transitions?expand=transitions.fields",reqParams,requestBody,connection,success,fail)
                 };
                 this.getAllowedTransitions = function(issueIdOrKey,success,fail){
                     $this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,connection,success,fail)
@@ -98,7 +99,7 @@ module.exports = {
                 };
 
                 this.advancedSearch = function(requestBody,success,fail){
-                    $this.post("/rest/api/2/search",undefined,requestBody,connection,success,fail);
+                    this.post("/rest/api/2/search",undefined,requestBody,connection,success,fail);
                 };
             })(connection);
             //return this;
