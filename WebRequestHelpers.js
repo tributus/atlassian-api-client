@@ -79,7 +79,8 @@ var impl = {
             resp.on("end", function(){
                 try{
                     if(data){
-                        success(JSON.parse(data));
+                        var jsonData = JSON.parse(data);
+                        success(jsonData);
                     }
                     else{
                         success({status:"success", tag:"void-response"});

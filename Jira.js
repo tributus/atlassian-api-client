@@ -3,19 +3,7 @@
  */
 var request = require('./WebRequestHelpers');
 module.exports = {
-    get:function (url,params,data, connectionData ,success, fail) {
-        request.getAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
-    },
-    // post:function(url,params,data, connectionData ,success, fail){
-    //     request.postAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
-    // },
-    put:function(url,params,data, connectionData ,success, fail){
-        request.putAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
-    },
-    delete:function(url,params,data, connectionData ,success, fail){
-        request.deleteAtlassianData(request.buildApiUrl(params,url),data,connectionData,success,fail);
-    },
-    getInterface:function($this){
+    getInterface:function(){
         return function(connection){
             return new (function(connection){
                 connection.protocol = connection.protocol || 'http';
@@ -24,23 +12,22 @@ module.exports = {
                 connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
 
                 this.get = function(url,params,data, success, fail){
-                    $this.get(url,params,data,connection,success,fail);
+                    request.getAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
                 };
 
                 this.post = function(url,params,data, success, fail){
                     request.postAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
-                    //$this.post(url,params,data,connection,success,fail);
                 };
                 this.put = function(url,params,data, success, fail){
-                    $this.put(url,params,data,connection,success,fail);
+                    request.putAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
                 };
 
                 this.delete = function(url,params,data, success, fail){
-                    $this.delete(url,params,data,connection,success,fail);
+                    request.deleteAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
                 };
                 this.getIssueByID = function(issueid,success,fail){
                     var params ={issueid:issueid};
-                    $this.get("/rest/api/2/issue/{issueid}",params,undefined,connection,success,fail);
+                    this.get("/rest/api/2/issue/{issueid}",params,undefined,connection,success,fail);
 
                 };
                 this.createIssue = function(issueData,success,fail){
@@ -92,17 +79,16 @@ module.exports = {
                     this.post("/rest/api/2/issue/{issueIdOrKey}/transitions?expand=transitions.fields",reqParams,requestBody,connection,success,fail)
                 };
                 this.getAllowedTransitions = function(issueIdOrKey,success,fail){
-                    $this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,connection,success,fail)
+                    this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,connection,success,fail)
                 };
                 this.search = function(query,success,fail){
-                    $this.get("/rest/api/2/search?jql={jql}",{jql:query},undefined,connection,success,fail);
+                    this.get("/rest/api/2/search?jql={jql}",{jql:query},undefined,connection,success,fail);
                 };
 
                 this.advancedSearch = function(requestBody,success,fail){
                     this.post("/rest/api/2/search",undefined,requestBody,connection,success,fail);
                 };
             })(connection);
-            //return this;
         }
     }
 };
