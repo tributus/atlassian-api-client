@@ -37,21 +37,22 @@ var impl = {
             });
             resp.on("end", function(){
                 try{
-                    success(JSON.parse(data));
+                    var objData = JSON.parse(data);
+                    return success(objData);
                 }
                 catch(ex){
                     if(connectionData.options.allowNoJsonResponse){
-                        success(data,ex);
+                        return success(data,ex);
                     }
                     else{
                         console.log(data);
-                        fail(data,ex);
+                        return fail(data,ex);
                     }
                 }
 
             });
         }).on("error", function(e){
-            fail(e);
+            return fail(e);
         });
     },
     changeAtlassianData:function(method, apiUrl,data,connectionData,success,fail){
