@@ -80,10 +80,10 @@ var impl = {
                 try{
                     if(data){
                         var jsonData = JSON.parse(data);
-                        success(jsonData);
+                        return success(jsonData);
                     }
                     else{
-                        success({status:"success", tag:"void-response"});
+                        return success({status:"success", tag:"void-response"});
                     }
                 }
                 catch(ex){
@@ -92,12 +92,12 @@ var impl = {
                     }
                     else{
                         console.log(ex,data);
-                        fail(ex,data);
+                        return fail(ex,data);
                     }
                 }
             });
             resp.on("error", function(e){
-                fail(e);
+                return fail(e);
             })
         });
         post_req.end(body);
