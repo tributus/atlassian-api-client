@@ -27,11 +27,11 @@ module.exports = {
                 };
                 this.getIssueByID = function(issueid,success,fail){
                     var params ={issueid:issueid};
-                    this.get("/rest/api/2/issue/{issueid}",params,undefined,connection,success,fail);
+                    this.get("/rest/api/2/issue/{issueid}",params,undefined,success,fail);
 
                 };
                 this.createIssue = function(issueData,success,fail){
-                    this.post("/rest/api/2/issue/",undefined,issueData,connection,success,fail);
+                    this.post("/rest/api/2/issue/",undefined,issueData,success,fail);
                 };
 
                 this.linkIssues = function(linkTypeName,inwardIssueKey,outwardIssueKey,commentBody, success,fail){
@@ -49,17 +49,17 @@ module.exports = {
                     if(commentBody){
                         LinkRequestBody.comment ={body:commentBody};
                     }
-                    this.post("/rest/api/2/issueLink",undefined,LinkRequestBody,connection,success,fail);
+                    this.post("/rest/api/2/issueLink",undefined,LinkRequestBody,success,fail);
                 };
 
                 this.createRemoteLink = function(issueKeyOrID,url,title,success,fail){
                     var RequestBody = {object: {url:url,title:title}};
-                    this.post("/rest/api/latest/issue/{issuekey}/remotelink",{issuekey:issueKeyOrID},RequestBody,connection,success,fail);
+                    this.post("/rest/api/latest/issue/{issuekey}/remotelink",{issuekey:issueKeyOrID},RequestBody,success,fail);
                 };
 
                 this.addIssueComment = function(issueIdOrKey,comment, success,fail){
                     var requestBody = {"body": comment};
-                    this.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,connection,success,fail);
+                    this.post("/rest/api/2/issue/{issueIdOrKey}/comment",{issueIdOrKey:issueIdOrKey},requestBody,success,fail);
                 };
                 this.changeIssueStatus = function(issueIdOrKey,transitionIDOrRequestBody,success,fail){
                     var reqParams = {
@@ -76,17 +76,17 @@ module.exports = {
                     else{
                         requestBody = transitionIDOrRequestBody
                     }
-                    this.post("/rest/api/2/issue/{issueIdOrKey}/transitions?expand=transitions.fields",reqParams,requestBody,connection,success,fail)
+                    this.post("/rest/api/2/issue/{issueIdOrKey}/transitions?expand=transitions.fields",reqParams,requestBody,success,fail)
                 };
                 this.getAllowedTransitions = function(issueIdOrKey,success,fail){
-                    this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,connection,success,fail)
+                    this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,success,fail)
                 };
                 this.search = function(query,success,fail){
-                    this.get("/rest/api/2/search?jql={jql}",{jql:query},undefined,connection,success,fail);
+                    this.get("/rest/api/2/search?jql={jql}",{jql:query},undefined,success,fail);
                 };
 
                 this.advancedSearch = function(requestBody,success,fail){
-                    this.post("/rest/api/2/search",undefined,requestBody,connection,success,fail);
+                    this.post("/rest/api/2/search",undefined,requestBody,success,fail);
                 };
             })(connection);
         }
