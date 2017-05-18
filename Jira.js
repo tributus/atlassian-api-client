@@ -84,10 +84,33 @@ module.exports = {
                 this.search = function(query,success,fail){
                     this.get("/rest/api/2/search?jql={jql}",{jql:query},undefined,success,fail);
                 };
-
                 this.advancedSearch = function(requestBody,success,fail){
                     this.post("/rest/api/2/search",undefined,requestBody,success,fail);
                 };
+                /**
+                 * @param {string} issueKey
+                 * @param {string} userName
+                 * @param {function} success the request success delegate
+                 * @param {function} fail the request fail delegate
+                 * @description Changes the issue's assignee
+                 */
+                this.changeAssignee = function(issueKey,userName,success,fail){
+                    var params = {issueKey:issueKey};
+                    var body={
+                        name:userName
+                    }
+                    this.put("/rest/api/2/issue/{issueKey}/assignee",params,body,success,fail);
+                };
+                 /**
+                 * @param {string} issueKey
+                 * @param {string} userName
+                 * @param {function} success the request success delegate
+                 * @param {function} fail the request fail delegate
+                 * @description Clear the issue's assignee (this a shortland for changeAssignee(ISSUE-KEY,"-1"...) method)
+                 */
+                this.removeAssignee = function(issueKey,success,fail){
+                    this.changeAssignee(issueKey,"-1",success,fail);
+                }
             })(connection);
         }
     }
