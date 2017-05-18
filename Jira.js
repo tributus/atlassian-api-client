@@ -110,6 +110,9 @@ module.exports = {
                  */
                 this.removeAssignee = function(issueKey,success,fail){
                     this.changeAssignee(issueKey,"-1",success,fail);
+                },
+                this.getIssueStatus = function(issueKey,success,fail){
+                    this.get("/rest/api/2/issue/{issueKey}?fields=status",{issueKey:issueKey},undefined,success,fail);
                 }
             })(connection);
         }
