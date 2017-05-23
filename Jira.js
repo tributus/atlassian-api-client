@@ -82,7 +82,7 @@ module.exports = {
                     this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,success,fail)
                 };
                 this.search = function(query,success,fail){
-                    this.get("/rest/api/2/search?jql={jql}",{jql:query},undefined,success,fail);
+                    this.get("/rest/api/2/search?jql={jql}",{jql:encodeURIComponent(query)},undefined,success,fail);
                 };
                 this.advancedSearch = function(requestBody,success,fail){
                     this.post("/rest/api/2/search",undefined,requestBody,success,fail);
@@ -113,6 +113,10 @@ module.exports = {
                 },
                 this.getIssueStatus = function(issueKey,success,fail){
                     this.get("/rest/api/2/issue/{issueKey}?fields=status",{issueKey:issueKey},undefined,success,fail);
+                },
+                this.getReleaseContent = function(projectid,versionid,success,fail){
+                    var query= "project = * AND fixVersion = * ORDER BY priority DESC, key ASC".replace("*",projectid).replace("*",versionid);
+                    this.search(query,success,fail);
                 }
             })(connection);
         }
