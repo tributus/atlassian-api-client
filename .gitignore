@@ -82,6 +82,8 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 lab.js
+lab2.js
+lab-tdn.js
 /debug/
 /.vscode/
 .vscode

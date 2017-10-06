@@ -25,10 +25,13 @@ module.exports = {
                 this.delete = function(url,params,data, success, fail){
                     request.deleteAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
                 };
-                this.getIssueByID = function(issueid,success,fail){
-                    var params ={issueid:issueid};
-                    this.get("/rest/api/2/issue/{issueid}",params,undefined,success,fail);
-
+                this.getIssueByID = function(issueid,success,fail,expand){
+                    var baseurl = "/rest/api/2/issue/{issueid}"
+                    var params = {issueid:issueid};
+                    if(expand){
+                        baseurl += "?expand=" + expand;
+                    }
+                    this.get(baseurl,params,undefined,success,fail);
                 };
                 this.createIssue = function(issueData,success,fail){
                     this.post("/rest/api/2/issue/",undefined,issueData,success,fail);
