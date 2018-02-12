@@ -26,8 +26,8 @@ module.exports = {
                     request.deleteAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
                 };
 
-                this.getInboxPullRequests = function(success,fail){
-                    this.get("/rest/api/1.0/inbox/pull-requests?limit=25",undefined,undefined,success,fail);
+                this.getInboxPullRequests = function(success,fail,limit=25){
+                    this.get("/rest/api/1.0/inbox/pull-requests?limit=" + limit,undefined,undefined,success,fail);
                 };
 
                 this.getPullRequestMergeCondition = function(projectKey,repositorySlug,pullRequestId,success,fail){
