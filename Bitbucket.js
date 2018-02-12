@@ -26,8 +26,11 @@ module.exports = {
                     request.deleteAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
                 };
 
-                this.getInboxPullRequests = function(success,fail,limit=25){
-                    this.get("/rest/api/1.0/inbox/pull-requests?limit=" + limit,undefined,undefined,success,fail);
+                this.getInboxPullRequests = function(success,fail,limit=25,start=0){
+                    var url = "/rest/api/1.0/inbox/pull-requests?limit=*&start=*"
+                    .replace("*",limit)
+                    .replace("*",start);
+                    this.get(url,undefined,undefined,success,fail);
                 };
 
                 this.getPullRequestMergeCondition = function(projectKey,repositorySlug,pullRequestId,success,fail){
