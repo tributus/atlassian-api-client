@@ -4,9 +4,11 @@
 var bb          = require('./Bitbucket');
 var jira        = require('./Jira');
 var confluence  = require('./Confluence');
+var bamboo      = require('./Bamboo');
 
 module.exports = {
     bitbucket:  bb.getInterface(),
     jira:       jira.getInterface(),
-    confluence: confluence.getInterface()
+    confluence: confluence.getInterface(),
+    bamboo: bamboo.getInterface()
 };
