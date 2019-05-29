@@ -30,7 +30,7 @@ var getOauthConnector = function(connectionData){
 }
 
 //module interface
-exports.unknownGET = function(apiUrl,bodyData,connectionData,success,fail){
+exports.unknownGET = function(apiUrl,connectionData,success,fail){
     return fail({connection:connectionData}, new Error("UNKOWN authentication method"));
 }
 
@@ -38,7 +38,7 @@ exports.unknownCHANGE = function(method, apiUrl,data,connectionData,success,fail
     return fail({connection:connectionData}, new Error("UNKOWN authentication method"));
 }
 
-exports.BasicAuthenticationGET = function(apiUrl,bodyData,connectionData,success,fail){
+exports.BasicAuthenticationGET = function(apiUrl,connectionData,success,fail){
     var options = {
         host: connectionData.host,
         port: connectionData.port,
@@ -121,7 +121,7 @@ exports.BasicAuthenticationCHANGE = function(method, apiUrl,data,connectionData,
     post_req.end(body);
 }
 
-exports.OAuthGET = function(apiUrl,bodyData,connectionData,success,fail){
+exports.OAuthGET = function(apiUrl,connectionData,success,fail){
     var consumer = getOauthConnector(connectionData);
     var fullUrl = connectionData.host + apiUrl;
     

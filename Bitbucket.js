@@ -11,8 +11,8 @@ module.exports = {
                 connection.options = connection.options || {};
                 connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
 
-                this.get = function(url,params,data, success, fail){
-                    request.getAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                this.get = function(url,params, success, fail){
+                    request.getAtlassianData(request.buildApiUrl(params,url),connection,success,fail);
                 };
 
                 this.post = function(url,params,data, success, fail){
@@ -30,12 +30,12 @@ module.exports = {
                     var url = "/rest/api/1.0/inbox/pull-requests?limit=*&start=*"
                     .replace("*",limit)
                     .replace("*",start);
-                    this.get(url,undefined,undefined,success,fail);
+                    this.get(url,undefined,success,fail);
                 };
 
                 this.getPullRequestMergeCondition = function(projectKey,repositorySlug,pullRequestId,success,fail){
                     var params = {projectKey:projectKey,repositorySlug:repositorySlug,pullRequestId:pullRequestId};
-                    this.get("/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/merge",params,undefined,success,fail);
+                    this.get("/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/merge",params,success,fail);
                 };
 
                 this.approvePullRequest = function(projectKey,repositorySlug,pullRequestId,success,fail){

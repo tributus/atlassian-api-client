@@ -25,8 +25,8 @@ var impl = {
         if(connectionData.userName && connectionData.password) return "BasicAuthentication";
         return 'unknown';
     },
-    getAtlassianData: function(apiUrl,bodyData,connectionData,success,fail){
-        return extensions[impl.resolveAuthMethod(connectionData) + 'GET'](apiUrl,bodyData,connectionData,success,fail);
+    getAtlassianData: function(apiUrl,connectionData,success,fail){
+        return extensions[impl.resolveAuthMethod(connectionData) + 'GET'](apiUrl,connectionData,success,fail);
     },
     changeAtlassianData:function(method, apiUrl,data,connectionData,success,fail){
         return extensions[impl.resolveAuthMethod(connectionData) + 'CHANGE'](method,apiUrl,data,connectionData,success,fail);

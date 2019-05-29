@@ -10,13 +10,12 @@ module.exports = {
                 connection.port = connection.port || '80';
                 connection.options = connection.options || {};
 
-                this.get = function(url,params,data, success, fail){
-                    request.getAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                this.get = function(url,params,success,fail){
+                    request.getAtlassianData(request.buildApiUrl(params,url),connection,success,fail);
                 };
 
                 this.post = function(url,params,data, success, fail){
                     request.postAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
-                    //$this.postAtlassianData(url,params,data,connection,success,fail);
                 };
                 this.put = function(url,params,data, success, fail){
                     request.putAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
@@ -31,7 +30,7 @@ module.exports = {
                         itemid:itemid,
                         expand:expand || ""
                     };
-                    this.get("/rest/api/content/{itemid}?expand={expand}",params,undefined,success,fail);
+                    this.get("/rest/api/content/{itemid}?expand={expand}",params,success,fail);
                 };
 
                 this.postContent = function(requestbody,success,fail){

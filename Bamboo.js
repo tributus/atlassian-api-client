@@ -8,8 +8,8 @@ module.exports = {
                 connection.options = connection.options || {};
                 connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
 
-                this.get = function(url,params,data, success, fail){
-                    request.getAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                this.get = function(url,params, success, fail){
+                    request.getAtlassianData(request.buildApiUrl(params,url),connection,success,fail);
                 };
 
                 this.post = function(url,params,data, success, fail){
@@ -27,7 +27,7 @@ module.exports = {
                     var url = "/rest/api/latest/result/*/*.json"
                     .replace("*",planKey)
                     .replace("*",stbuildNumart);
-                    this.get(url,undefined,undefined,success,fail);
+                    this.get(url,undefined,success,fail);
                 };
                 
             })(connection);

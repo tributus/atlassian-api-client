@@ -11,8 +11,8 @@ module.exports = {
                 connection.options = connection.options || {};
                 connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
 
-                this.get = function(url,params,data, success, fail){
-                    request.getAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                this.get = function(url,params,success,fail){
+                    request.getAtlassianData(request.buildApiUrl(params,url),connection,success,fail);
                 };
 
                 this.post = function(url,params,data, success, fail){
@@ -31,7 +31,7 @@ module.exports = {
                     if(expand){
                         baseurl += "?expand=" + expand;
                     }
-                    this.get(baseurl,params,undefined,success,fail);
+                    this.get(baseurl,params,success,fail);
                 };
                 this.createIssue = function(issueData,success,fail){
                     this.post("/rest/api/2/issue/",undefined,issueData,success,fail);
@@ -82,10 +82,10 @@ module.exports = {
                     this.post("/rest/api/2/issue/{issueIdOrKey}/transitions?expand=transitions.fields",reqParams,requestBody,success,fail)
                 };
                 this.getAllowedTransitions = function(issueIdOrKey,success,fail){
-                    this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},undefined,success,fail)
+                    this.get("/rest/api/latest/issue/{issueIdOrKey}?expand=transitions&fields=transitions",{issueIdOrKey:issueIdOrKey},success,fail)
                 };
                 this.search = function(query,success,fail){
-                    this.get("/rest/api/2/search?jql={jql}",{jql:encodeURIComponent(query)},undefined,success,fail);
+                    this.get("/rest/api/2/search?jql={jql}",{jql:encodeURIComponent(query)},success,fail);
                 };
                 this.advancedSearch = function(requestBody,success,fail){
                     this.post("/rest/api/2/search",undefined,requestBody,success,fail);
@@ -115,7 +115,7 @@ module.exports = {
                     this.changeAssignee(issueKey,"-1",success,fail);
                 },
                 this.getIssueStatus = function(issueKey,success,fail){
-                    this.get("/rest/api/2/issue/{issueKey}?fields=status",{issueKey:issueKey},undefined,success,fail);
+                    this.get("/rest/api/2/issue/{issueKey}?fields=status",{issueKey:issueKey},success,fail);
                 },
                 this.getReleaseContent = function(projectid,versionid,success,fail){
                     var query= "project = * AND fixVersion = * ORDER BY priority DESC, key ASC".replace("*",projectid).replace("*",versionid);
