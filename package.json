@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/tributus/atlassian-api-client/issues"
   },
-  "homepage": "https://github.com/tributus/atlassian-api-client#readme"
+  "homepage": "https://github.com/tributus/atlassian-api-client#readme",
+  "dependencies": {
+    "oauth": "^0.9.15"
+  }
 }
