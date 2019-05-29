@@ -63,7 +63,10 @@ exports.BasicAuthenticationGET = function(apiUrl,connectionData,success,fail){
                     return success(data,ex);
                 }
                 else{
-                    return fail(data,ex);
+                    return fail({
+                        status: "error",
+                        rawErrorData:data
+                    },ex);
                 }
             }
 
@@ -110,7 +113,10 @@ exports.BasicAuthenticationCHANGE = function(method, apiUrl,data,connectionData,
                     success(data,ex);
                 }
                 else{
-                    return fail(ex,data);
+                    return fail({
+                        status: "error",
+                        rawErrorData:data
+                    },ex);
                 }
             }
         });
@@ -142,7 +148,10 @@ exports.OAuthGET = function(apiUrl,connectionData,success,fail){
                     success(data,ex);
                 }
                 else{
-                    return fail(ex,data);
+                    return fail({
+                        status: "error",
+                        rawErrorData:data
+                    },ex);
                 }
             }
         }
@@ -172,7 +181,10 @@ exports.OAuthCHANGE = function(method, apiUrl,data,connectionData,success,fail){
                     success(data,ex);
                 }
                 else{
-                    return fail(ex,data);
+                    return fail({
+                        status: "error",
+                        rawErrorData:data
+                    },ex);
                 }
             }
         }
