@@ -1,4 +1,7 @@
 var request = require('./WebRequestHelpers');
+var helpers = require('./genericHelpers');
+var shortcuts = require('./OperationsShortcuts/Bamboo.Shortcuts');
+
 module.exports = {
     getInterface:function(){
         return function(connection){
@@ -9,26 +12,30 @@ module.exports = {
                 connection.options.allowNoJsonResponse = connection.options.allowNoJsonResponse || false;
 
                 this.get = function(url,params, success, fail){
-                    request.getAtlassianData(request.buildApiUrl(params,url),connection,success,fail);
+                    request.getAtlassianData(helpers.prepareUrl(params,url),connection,success,fail);
                 };
 
                 this.post = function(url,params,data, success, fail){
-                    request.postAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                    request.postAtlassianData(helpers.prepareUrl(params,url),data,connection,success,fail);
                 };
+
                 this.put = function(url,params,data, success, fail){
-                    request.putAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                    request.putAtlassianData(helpers.prepareUrl(params,url),data,connection,success,fail);
                 };
 
                 this.delete = function(url,params,data, success, fail){
-                    request.deleteAtlassianData(request.buildApiUrl(params,url),data,connection,success,fail);
+                    request.deleteAtlassianData(helpers.prepareUrl(params,url),data,connection,success,fail);
                 };
 
-                this.getBuildInfo = function(planKey,buildNum,success,fail){
-                    var url = "/rest/api/latest/result/*/*.json"
-                    .replace("*",planKey)
-                    .replace("*",stbuildNumart);
-                    this.get(url,undefined,success,fail);
+                this.registerOperation = function(name,apiUrl,method){
+                    if(typeof apiUrl === "function"){
+                        this[name] = apiUrl;
+                    }
+                    else{
+                        helpers.createFn(this,name,apiUrl,method)
+                    }
                 };
+                shortcuts.register(this);
                 
             })(connection);
         }

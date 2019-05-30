@@ -3,23 +3,6 @@
  */
 var extensions = require('./WebRequestHelpers.Extensions');
 var impl = {
-    buildApiUrl:function(data,url){
-        if(data){
-            var keys = url.match(/\{[a-zA-Z]+}/g);
-            if(keys){
-                keys.forEach(function(key){
-                    url = url.replace(key,data[key.replace(/\{|}/g,"")]);
-                });
-                return url
-            }
-            else{
-                return url;
-            }
-        }
-        else{
-            return url;
-        }
-    },
     resolveAuthMethod : function(connectionData){
         if(connectionData.oauthAccessToken && connectionData.oauthAccessTokenSecret) return "OAuth";
         if(connectionData.userName && connectionData.password) return "BasicAuthentication";
@@ -42,7 +25,6 @@ var impl = {
     }
 };
 module.exports = {
-    buildApiUrl:impl.buildApiUrl,
     getAtlassianData:impl.getAtlassianData,
     postAtlassianData:impl.postAtlassianData,
     putAtlassianData:impl.putAtlassianData,

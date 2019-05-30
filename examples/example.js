@@ -2,12 +2,12 @@
  * Created by anderson.santos on 24/02/2017.
  */
 var bitbucket = require('./index').bitbucket({
-    host:'bitbucket.yourserver.com.br',
+    host:'bitbucket.yourserver.com',
     userName:'yourUserName',
     password:'yourPassword'
 });
 var jira = require('./index').jira({
-    host:'jira.yourserver.com.br',
+    host:'jira.yourserver.com',
     userName:'yourUserName',
     password:'yourUserName'
 });
