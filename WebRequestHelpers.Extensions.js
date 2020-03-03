@@ -47,6 +47,10 @@ exports.BasicAuthenticationGET = function(apiUrl,connectionData,success,fail){
             "Authorization": "Basic " + Buffer.from(connectionData.userName +":" + connectionData.password).toString('base64')
         }
     };
+    if(connectionData["User-Agent"]){
+        options.headers["User-Agent"] = connectionData["User-Agent"];
+    }
+
     var protocol = require(connectionData.protocol);
     protocol.get(options, function(resp){
         var data = '';
@@ -93,6 +97,10 @@ exports.BasicAuthenticationCHANGE = function(method, apiUrl,data,connectionData,
             "Authorization": "Basic " + Buffer.from(connectionData.userName +":" + connectionData.password).toString('base64')
         }
     };
+    if(connectionData["User-Agent"]){
+        options.headers["User-Agent"] = connectionData["User-Agent"];
+    }
+
     var post_req = require(connectionData.protocol).request(options, function(resp){
         var data = '';
         resp.on('data', function(chunk){
@@ -130,7 +138,9 @@ exports.BasicAuthenticationCHANGE = function(method, apiUrl,data,connectionData,
 exports.OAuthGET = function(apiUrl,connectionData,success,fail){
     var consumer = getOauthConnector(connectionData);
     var fullUrl = connectionData.host + apiUrl;
-    
+    if(connectionData["User-Agent"]){
+        consumer._headers["User-Agent"] = connectionData["User-Agent"];
+    }
     consumer.get(fullUrl,connectionData.oauthAccessToken,connectionData.oauthAccessTokenSecret,"application/json",
         function(error,data){
             if(error) return fail(error);
@@ -164,6 +174,9 @@ exports.OAuthCHANGE = function(method, apiUrl,data,connectionData,success,fail){
     
     method = method || "POST";
     var body = JSON.stringify(data||{});
+    if(connectionData["User-Agent"]){
+        consumer._headers["User-Agent"] = connectionData["User-Agent"];
+    }
     consumer._performSecureRequest(connectionData.oauthAccessToken,connectionData.oauthAccessTokenSecret,method,fullUrl,null,body,OAUTH_DEFAULT_GET_CONTENT_TYPE,
         function(error,data){
             if(error) return fail(error);
